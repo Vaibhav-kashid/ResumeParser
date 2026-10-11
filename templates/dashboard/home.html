@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Candidate Dashboard <span class="badge bg-secondary">{{ total_count }}</span></h3>
+  <a href="{% url 'export_csv' %}" class="btn btn-outline-success btn-sm">Export CSV</a>
+</div>
+
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-5">
+    <input type="text" name="q" class="form-control" placeholder="Search by name, email, phone" value="{{ query }}">
+  </div>
+  <div class="col-md-5">
+    <input type="text" name="skill" class="form-control" placeholder="Filter by skill (e.g. Python)" value="{{ skill_filter }}">
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100">Search</button>
+  </div>
+</form>
+
+<div class="row">
+  {% for candidate in candidates %}
+  <div class="col-md-4 mb-3">
+    <div class="card p-3">
+      <h5>{{ candidate.name|default:"Unnamed Candidate" }}</h5>
+      <p class="mb-1 text-muted small">{{ candidate.email }}</p>
+      <p class="mb-2 text-muted small">{{ candidate.phone }}</p>
+      <div class="mb-2">
+        {% for skill in candidate.skills.all|slice:":5" %}
+          <span class="badge bg-primary skill-badge">{{ skill.name }}</span>
+        {% endfor %}
+      </div>
+      <a href="{% url 'candidate_profile' candidate.pk %}" class="btn btn-sm btn-outline-primary">View Profile</a>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-muted">No candidates yet. <a href="{% url 'upload_resume' %}">Upload a resume</a> to get started.</p>
+  {% endfor %}
+</div>
+{% endblock %}

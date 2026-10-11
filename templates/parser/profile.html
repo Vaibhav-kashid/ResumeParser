@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ candidate.name }}'s Profile{% endblock %}
+{% block content %}
+<div class="card p-4 mb-3">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h3>{{ candidate.name|default:"Unnamed Candidate" }}</h3>
+      <p class="mb-1">📧 {{ candidate.email|default:"—" }}</p>
+      <p class="mb-1">📞 {{ candidate.phone|default:"—" }}</p>
+      {% if candidate.linkedin_url %}<p class="mb-1">🔗 <a href="{{ candidate.linkedin_url }}" target="_blank">LinkedIn</a></p>{% endif %}
+      {% if candidate.github_url %}<p class="mb-1">💻 <a href="{{ candidate.github_url }}" target="_blank">GitHub</a></p>{% endif %}
+    </div>
+    <a href="{% url 'candidate_profile_edit' candidate.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+  </div>
+</div>
+
+<div class="card p-4 mb-3">
+  <h5>Skills</h5>
+  {% for skill in candidate.skills.all %}
+    <span class="badge bg-primary skill-badge">{{ skill.name }}</span>
+  {% empty %}
+    <p class="text-muted">No skills detected.</p>
+  {% endfor %}
+</div>
+
+<div class="card p-4 mb-3">
+  <h5>Education</h5>
+  <ul>
+    {% for edu in candidate.education.all %}
+      <li>{{ edu.institution }} {% if edu.year %}({{ edu.year }}){% endif %}</li>
+    {% empty %}
+      <li class="text-muted">No education entries detected.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card p-4 mb-3">
+  <h5>Experience</h5>
+  <ul>
+    {% for exp in candidate.experience.all %}
+      <li>{{ exp.role }}</li>
+    {% empty %}
+      <li class="text-muted">No experience entries detected.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+{% endblock %}
